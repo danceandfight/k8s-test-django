@@ -40,10 +40,13 @@ $ docker-compose run web ./manage.py createsuperuser
 
 Запускаем кластер minikube:
 `minikube start --driver=virtualbox`
+
 Переходим в папку с докерфайлом:
 `cd backend_main_django`
+
 Создаем image в кластере:
 `minikube image build -t site-image -f ./Dockerfile .`
+
 Переименовываем файл `configmap_example.yaml` в `configmap.yaml` и подставляем свои переменные окружения в него.
 Применяем конфигфайл и создаем контейнеры postgres и сайта на django:
 ```
@@ -53,9 +56,14 @@ kubectl apply -f ../kubernetes/django.yaml
 ```
 Для добавления поддержки ingress запускаем:
 `kubectl apply -f ../kubernetes/ingress.yaml`
+
 Добавляем тестовый адрес сайта в хосты:
 `echo "$(minikube ip) star-burger.test" | sudo tee -a /etc/hosts`
+
 Сайт будет отображаться по адресу: starburger.test
+
+Запускаем регулярное удаление сессий django:
+`kubectl apply -f ../kubernetes/django-clearsession.yaml`
 
 Открываем сайт через сервис:
 `minikube service djangoapp-single-service`

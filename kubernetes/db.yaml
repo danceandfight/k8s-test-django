@@ -1,0 +1,38 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: db-deployment
+  labels:
+    app: postgres-db
+spec:
+  selector:
+    matchLabels:
+     app: postgres
+  template:
+    metadata:
+      labels: 
+        app: postgres
+    spec:
+      containers:
+      - name: postgres-for-django
+        image: postgres:12.0-alpine
+        ports:
+        - containerPort: 5432
+        envFrom:
+          - configMapRef: 
+              name: django-config
+---
+apiVersion  : v1
+kind: Service
+metadata:
+  name: postgres-single-service
+  labels:
+    env  : prod
+    owner: PavelZotikov
+spec:
+  selector: 
+    app: postgres
+  ports: 
+    - protocol  : TCP
+      port      : 5432
+      targetPort: 5432

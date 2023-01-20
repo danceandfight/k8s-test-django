@@ -1,0 +1,40 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: djangoapp-deployment
+  labels:
+    app: djangoapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: django
+  template:
+    metadata:
+      labels: 
+        app: django
+    spec: 
+      containers:
+      - name: django-site
+        image: django_app:latest
+        envFrom:
+          - configMapRef: 
+              name: django-config
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
+---
+apiVersion  : v1
+kind: Service
+metadata:
+  name: djangoapp-single-service
+  labels:
+    env  : prod
+    owner: PavelZotikov
+spec:
+  selector: 
+    app: django
+  ports:
+    - port      : 80
+      targetPort: 80
+  type: NodePort

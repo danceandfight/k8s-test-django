@@ -32,3 +32,24 @@ $ docker-compose run web ./manage.py createsuperuser
 `ALLOWED_HOSTS` -- настройка Django со списком разрешённых адресов. Если запрос прилетит на другой адрес, то сайт ответит ошибкой 400. Можно перечислить несколько адресов через запятую, например `127.0.0.1,192.168.0.1,site.test`. [Документация Django](https://docs.djangoproject.com/en/3.2/ref/settings/#allowed-hosts).
 
 `DATABASE_URL` -- адрес для подключения к базе данных PostgreSQL. Другие СУБД сайт не поддерживает. [Формат записи](https://github.com/jacobian/dj-database-url#url-schema).
+
+
+## Как запустить с использованием minikube
+
+Предварительно необходимо устрановить [minikube](https://minikube.sigs.k8s.io/docs/drivers/virtualbox/), [kubectl](https://kubernetes.io/ru/docs/tasks/tools/install-kubectl/) и [virtualbox](https://www.virtualbox.org/).
+
+Запускаем кластер minikube:
+`minikube start --driver=virtualbox`
+Переходим в папку с докерфайлом:
+`cd backend_main_django`
+Создаем image в кластере:
+`minikube image build -t site-image -f ./Dockerfile .`
+Переименовываем файл `configmap_example.yaml` в `configmap.yaml` и подставляем свои переменные окружения в него.
+Применяем конфигфайл и создаем контейнеры postgres и сайта на django:
+```
+kubectl apply -f ../kubernetes/configmap.yaml
+kubectl apply -f ../kubernetes/db.yaml
+kubectl apply -f ../kubernetes/django.yaml
+```
+Открываем сайт через сервис:
+`minikube service djangoapp-single-service`

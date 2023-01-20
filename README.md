@@ -51,5 +51,11 @@ kubectl apply -f ../kubernetes/configmap.yaml
 kubectl apply -f ../kubernetes/db.yaml
 kubectl apply -f ../kubernetes/django.yaml
 ```
+Для добавления поддержки ingress запускаем:
+`kubectl apply -f ../kubernetes/ingress.yaml`
+Добавляем тестовый адрес сайта в хосты:
+`echo "$(minikube ip) star-burger.test" | sudo tee -a /etc/hosts`
+Сайт будет отображаться по адресу: starburger.test
+
 Открываем сайт через сервис:
 `minikube service djangoapp-single-service`

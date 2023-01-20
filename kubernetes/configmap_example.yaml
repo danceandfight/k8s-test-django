@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: django-config
+data:
+  DEBUG: "False"
+  SECRET_KEY: "nfrwingwp22emd3"
+  DATABASE_URL: "postgres://db_name:password@db:port/user_name"
+  ALLOWED_HOSTS: "*"
+  POSTGRES_DB: db_name
+  POSTGRES_USER: user_name
+  POSTGRES_PASSWORD: password 
+  
